@@ -23,7 +23,7 @@ $info = array(
 	'summary' => 'DiakonTV App Course Generator - builds a tree of pages', 
 
 	// Module version number (integer)
-	'version' => 2, 
+	'version' => 3, 
 
 	// Name of person who created this module (change to your name)
 	'author' => 'James Swallow', 
