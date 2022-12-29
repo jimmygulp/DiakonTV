@@ -194,7 +194,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 			// Get the Hole
 			$hole = $form->get('Hole'.$i);
 			// Get the Par for this hole
-			$par = $form->get('Hole'.$i);
+			$par = $form->get('Hole'.$i)->value;
 			
 			// Create it's page
 			$p = $pages->new([
