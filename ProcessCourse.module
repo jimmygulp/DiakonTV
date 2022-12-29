@@ -215,7 +215,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 						'title' => $location
 					]);
 				}
-			} elsif ($par == 4) {
+			} elseif ($par == 4) {
 				foreach ($par4locs as $location) {
 					$p = $pages->new([
 						'template' => 'Location',
@@ -223,7 +223,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 						'title' => $location
 					]);
 				}
-			} elsif ($par == 5) {
+			} elseif ($par == 5) {
 				foreach ($par5locs as $location) {
 					$p = $pages->new([
 						'template' => 'Location',
