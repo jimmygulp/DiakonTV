@@ -171,7 +171,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 			$field->addOption('4', $this->_('4'));
 			$field->addOption('5', $this->_('5'));
 			$field->optionColumns = 1; // make it display options on 1 line
-			$field->attr('value', $this->hole$i);
+			$field->attr('value', $this->$i);
 			$field->required = true;
 			$form->add($field);
 		}
