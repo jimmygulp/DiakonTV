@@ -137,6 +137,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 	 * Generates a new empty course. Just need a name from this form.
 	 * Will then generate a complete tree of Course, Holes, Positions
 	 * for data to then be input.
+	 * Added Par per Hole inputs at John's request - 29 Dec 2022
 	 * 
 	 * @return string
 	 * 
@@ -160,6 +161,20 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$field->icon = 'file-text-o';
 		$field->required = true;
 		$form->add($field);
+		
+		/** Loop around the 18 holes and get a Par for each */
+		for ($i = 1, $i < 18, ++$i) {
+			$field = $modules->get('InputfieldRadios');
+			$field->attr('name', 'Hole'.$i);
+			$field->label = $this->_('Hole '. $i .' Par'); 
+			$field->addOption('3', $this->_('3'));
+			$field->addOption('4', $this->_('4'));
+			$field->addOption('5', $this->_('5'));
+			$field->optionColumns = 1; // make it display options on 1 line
+			$field->attr('value', $this->hole$i);
+			$field->required = true;
+			$form->add($field);
+		}
 
 		/** @var InputfieldSubmit $submit */
 		$submit = $modules->get('InputfieldSubmit'); 
@@ -199,13 +214,29 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$value = $form->getChildByName('notice_text')->val();
 		$this->message($this->_('Your notification text') . " - $value");
 		$coursename = $value;
-		$holelocations = array(
+		/** Hole Locations are now Par-dependant */
+		$par3locations = array(
+			"Tee Golfers View",
+			"Tee Box",
+			"Green Golfers Left",
+			"Green Center");
+		$par4locations = array(
 			"Tee Golfers View",
 			"Tee Box",
 			"Fairway to Tee",
 			"Fairway to Green",
 			"Green Golfers Left",
 			"Green Center");
+		$par5locations = array(
+			"Tee Golfers View",
+			"Tee Box",
+			"Fairway to Tee",
+			"Fairway to Green",
+			"Fairway 3rd Shot View to Green",
+			"Green Golfers Left",
+			"Green Center");
+		
+		/** May remove this now, we've got the holes as part of the input so just loop around that
 		$holes = array(
 			"Hole 1",
 			"Hole 2",
@@ -227,7 +258,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 			"Hole 18",
 			"Practice Green",
 			"Practice Range");
-			
+		*/
 
 		// Create the course
 		$p = $pages->new([
