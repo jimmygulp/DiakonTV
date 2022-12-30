@@ -136,6 +136,59 @@ class ProcessCourse extends Process implements ConfigurableModule {
 	}
 
 	/**
+	 * Handles the ./add-spider/ URL
+	 * 
+	 * Fetches the refering page (ie, /course/dummy-course/hole-4/)
+	 * and uses that to add 2 spider locations to the tree.
+	 * Will try and be clever to add them to the hole rather than a
+	 * sub location, so if the inputter is at the Green and wants to add
+	 * a Spider, they don't have to exit the location to put them in.
+	 * 
+	 * @return string
+	 * 
+	 */
+	public function ___executeAddSpider() {
+		
+		$modules = $this->wire()->modules;
+		$input = $this->wire()->input;
+		
+		$this->headline($this->_('Generating Spider Pages')); // the <h1> headline
+		$this->browserTitle($this->_('Creating Spider Pages')); // The <title> tag
+		
+		// This is where we came from
+		$session->prevPage = $page;
+
+		// We'll ask for confirmation, so need a form, just so we're not
+		// blindly creating more pages than we need, and avoids fat-fingers.
+		
+		/** @var InputfieldForm $form */
+		$form = $modules->get('InputfieldForm');
+		$form->description = $this->_('Please confirm!');
+
+		/** @var InputfieldText $field */
+		$field = $modules->get('InputfieldText'); 
+		$field->attr('name', 'notice_text'); 
+		$field->label = $this->_('New Course Name'); 
+		$field->icon = 'file-text-o';
+		$field->required = true;
+		$form->add($field);
+
+		/** @var InputfieldSubmit $submit */
+		$submit = $modules->get('InputfieldSubmit'); 
+		$submit->attr('name', 'submit_now'); 
+		$submit->val($this->_('Submit now')); 
+		$submit->icon = 'smile-o';
+		$submit->addActionValue('exit', $this->_('Submit and exit'), 'frown-o'); // after-submit actions
+		$submit->addActionValue('pages', $this->_('Submit and go to page list'), 'meh-o');
+		$form->add($submit);
+
+		// check if form has been submitted
+		if($input->post($submit->name)) $this->addSpider($form);
+		
+		return $form->render();
+	}
+	
+	/**
 	 * Process an Inputfields form and respond to requested submit action
 	 * 
 	 * @param InputfieldForm $form
@@ -246,6 +299,61 @@ class ProcessCourse extends Process implements ConfigurableModule {
 			'template' => 'Hole',
 			'parent' => '/courses/'.$sancoursename.'/',
 			'title' => 'Practice Green'
+		]);
+		
+		// That should be everything. 
+		
+		/** @var InputfieldSubmit $submit */
+		$submit = $form->getChildByName('submit_now');
+
+		// user selected: submit and exit
+		if($submit->submitValue === 'exit') $session->redirect('../');
+
+		// user selected: submit and go to page list
+		if($submit->submitValue === 'pages') $session->redirect($config->urls->admin);
+	}
+
+	/**
+	 * Process an Inputfields form and respond to requested submit action
+	 * 
+	 * @param InputfieldForm $form
+	 * 
+	 */
+	protected function processCourse(InputfieldForm $form) {
+	
+		$input = $this->wire()->input;
+		$session = $this->wire()->session;
+		$config = $this->wire()->config;
+	
+		// process the form
+		$form->processInput($input->post);
+	
+		// return now if form had errors
+		if(count($form->getErrors())) return;
+		
+		// no errors: display notification with user’s entered text
+		$pages = $this->wire()->pages;
+		$value = $form->getChildByName('notice_text')->val();
+		$this->message($this->_('Your notification text') . " - $value");
+		$coursename = $value;
+		
+		// To-Do - Tidy up
+		
+		// Get the path name version of the Course Name
+		$sancoursename = trim($this->wire('sanitizer')->hyphenCase($coursename));
+		// Add Hole info here for adding to the Hole
+		/** */
+		
+		// Now create the 2 Spider Locations
+		$p = $pages->new([
+			'template' => 'Location',
+			'parent' => '/courses/'.$sancoursename.'/'.$hole.'/',
+			'title' => 'Green Spider Location'
+		]);
+		$p = $pages->new([
+			'template' => 'Hole',
+			'parent' => '/courses/'.$sancoursename.'/'.$hole.'/',
+			'title' => 'Green View from Spider Height'
 		]);
 		
 		// That should be everything. 
