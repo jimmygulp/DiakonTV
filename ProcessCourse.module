@@ -68,6 +68,8 @@ class ProcessCourse extends Process implements ConfigurableModule {
 				'./tournament/' => $this->_('Tournament'),
 				'./tour/' => $this->_('Tour'),
 				'./new-course/' => $this->_('New Course'), 
+				'./add-spider/' => $this->_('Add Spider Locations'), 
+				'./add-tower/' => $this->_('Add Tower Locations'), 
 			]
 		];
 	}	
