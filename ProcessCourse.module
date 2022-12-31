@@ -161,16 +161,15 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		// $refpage will contain the ID of the page we were working on, get the parent (hole)
 		// from that as $pageparent
 		$dirs = explode('=', $refpage);
-    	foreach ($dirs as $key=>$val) {
-             if (is_numeric($val)) {
-                 $locid = $val;
-             }
+    		foreach ($dirs as $key=>$val) {
+             		if (is_numeric($val)) {
+                 	$locid = $val;
+             	}
 		$holeid = $page->parent($parent = $locid);
 		$courseid = $page->parent($parent = $holeid);
 		
 		// We'll ask for confirmation, so need a form, just so we're not
 		// blindly creating more pages than we need, and avoids fat-fingers.
-		/** @var InputfieldForm $form */
 		$form = $modules->get('InputfieldForm');
 		$form->description = $this->_('Please confirm!');
 
