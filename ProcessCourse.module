@@ -196,7 +196,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		if($input->post($submit->name)) $this->addSpider($form);
 		
 		return $form->render();
-	}
+	}}
 	
 	/**
 	 * Process an Inputfields form and respond to requested submit action
