@@ -148,6 +148,8 @@ class ProcessCourse extends Process implements ConfigurableModule {
 	 * 
 	 */
 	public function ___executeAddSpider() {
+		// DEBUG - Open a file to write vars to
+		$debug = fopen("/home/diakontv.app/tmp/debug", "a+");
 		
 		$modules = $this->wire()->modules;
 		$input = $this->wire()->input;
@@ -157,19 +159,23 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		
 		// This is where we came from (PHP gives us this, no need for PW to do it)
 		$refpage = $_SERVER['HTTP_REFERER'];
+		fwrite($debug,"Referring Page:".$refpage."\n");
 		
 		// $refpage will contain the ID of the page we were working on, get the parent (hole)
 		// from that as $pageparent
 		$dirs = explode('=', $refpage);
     		foreach ($dirs as $key=>$val) {
+			fwrite($debug,"Splitting refpage, got this: ".$val."\n");
              		if (is_numeric($val)) {
                  		$locid = $val;
+				fwrite($debug,"We found a valid numeric value: ".$val."\n");
 			}
              	}
 		
 		$page = $this->wire()->page;
 		$holeid = $page->parent($parent = $locid);
 		$courseid = $page->parent($parent = $holeid);
+		fwrite($debug,"HoleID: ".$holeid. " -- CourseID: ".$courseid"\n");
 		
 		// We'll ask for confirmation, so need a form, just so we're not
 		// blindly creating more pages than we need, and avoids fat-fingers.
