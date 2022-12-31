@@ -163,7 +163,8 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$dirs = explode('=', $refpage);
     		foreach ($dirs as $key=>$val) {
              		if (is_numeric($val)) {
-                 	$locid = $val;
+                 		$locid = $val;
+			}
              	}
 		$holeid = $page->parent($parent = $locid);
 		$courseid = $page->parent($parent = $holeid);
@@ -193,10 +194,10 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$form->add($submit);
 
 		// check if form has been submitted
-		if($input->post($submit->name)) $this->addSpider($form);
+		if($input->post($submit->name)) $this->processSpider($form);
 		
 		return $form->render();
-	}}
+	}
 	
 	/**
 	 * Process an Inputfields form and respond to requested submit action
@@ -329,7 +330,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 	 * @param InputfieldForm $form
 	 * 
 	 */
-	protected function processCourse(InputfieldForm $form) {
+	protected function processSpider(InputfieldForm $form) {
 	
 		$input = $this->wire()->input;
 		$session = $this->wire()->session;
