@@ -156,23 +156,34 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$this->browserTitle($this->_('Creating Spider Pages')); // The <title> tag
 		
 		// This is where we came from
-		$session->prevPage = $page;
-
+		$session->prevPage = $refpage;
+		
+		// $refpage will contain the ID of the page we were working on, get the parent (hole)
+		// from that as $pageparent
+		$dirs = explode('=', $refpage);
+    	foreach ($dirs as $key=>$val) {
+             if (is_numeric($val)) {
+                 $locid = $val
+             }
+		$holeid = $page->parent($parent = $locid);
+		$courseid = $page->parent($parent = $holeid);
+		
 		// We'll ask for confirmation, so need a form, just so we're not
 		// blindly creating more pages than we need, and avoids fat-fingers.
-		
 		/** @var InputfieldForm $form */
 		$form = $modules->get('InputfieldForm');
 		$form->description = $this->_('Please confirm!');
 
-		/** @var InputfieldText $field */
-		$field = $modules->get('InputfieldText'); 
-		$field->attr('name', 'notice_text'); 
-		$field->label = $this->_('New Course Name'); 
-		$field->icon = 'file-text-o';
-		$field->required = true;
-		$form->add($field);
-
+		// We're not going to need any input, we'll just show the options we've found,
+		// and when submitted, this'll then create the pages
+		$this->message($this->_('Course Name') . " - $pages->get($courseid)->title");
+		$this->message($this->_('Hole') . " - $pages->get($holeid)->title");
+		$field = $this->modules->get('InputfieldHidden');
+		$field->attr('name', 'parent');
+		$field->attr('value', $holeid); 
+		$form->append($field);
+		
+	
 		/** @var InputfieldSubmit $submit */
 		$submit = $modules->get('InputfieldSubmit'); 
 		$submit->attr('name', 'submit_now'); 
