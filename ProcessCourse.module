@@ -155,8 +155,8 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$this->headline($this->_('Generating Spider Pages')); // the <h1> headline
 		$this->browserTitle($this->_('Creating Spider Pages')); // The <title> tag
 		
-		// This is where we came from
-		$refpage = $session->prevPage;
+		// This is where we came from (PHP gives us this, no need for PW to do it)
+		$refpage = $_SERVER['HTTP_REFERER'];
 		
 		// $refpage will contain the ID of the page we were working on, get the parent (hole)
 		// from that as $pageparent
