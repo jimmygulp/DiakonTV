@@ -156,7 +156,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$this->browserTitle($this->_('Creating Spider Pages')); // The <title> tag
 		
 		// This is where we came from
-		$session->prevPage = $refpage;
+		$refpage = $session->prevPage;
 		
 		// $refpage will contain the ID of the page we were working on, get the parent (hole)
 		// from that as $pageparent
