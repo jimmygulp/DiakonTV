@@ -163,7 +163,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$dirs = explode('=', $refpage);
     	foreach ($dirs as $key=>$val) {
              if (is_numeric($val)) {
-                 $locid = $val
+                 $locid = $val;
              }
 		$holeid = $page->parent($parent = $locid);
 		$courseid = $page->parent($parent = $holeid);
