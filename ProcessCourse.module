@@ -172,8 +172,9 @@ class ProcessCourse extends Process implements ConfigurableModule {
 			}
              	}
 		
-		$page = $this->wire()->pages;
-		$holeid = $page->findIDs("parent=".$locid);
+		$page = $this->wire()->page;
+		$holeid = $page->locid->first()->id;
+		//$holeid = $page->parent("parent=".$locid);
 		$courseid = $page->parent($parent = $holeid);
 		fwrite($debug,"HoleID: ".$holeid. " -- CourseID: ".$courseid."\n");
 		
