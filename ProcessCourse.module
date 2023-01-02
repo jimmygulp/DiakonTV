@@ -187,10 +187,14 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$field->collapsed(1);
 		$form->add($field);
 		
-		// Hidden input to send the Hole ID to the next part!
+		// Hidden input to send the Hole & Course IDs to the next part!
 		$field = $this->modules->get('InputfieldHidden');
-		$field->attr('name', 'parent');
+		$field->attr('name', 'hole');
 		$field->attr('value', $holeid); 
+		$form->append($field);
+		$field = $this->modules->get('InputfieldHidden');
+		$field->attr('name', 'course');
+		$field->attr('value', $courseid); 
 		$form->append($field);
 		
 	
@@ -209,6 +213,83 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		return $form->render();
 	}
 	
+	/**
+	 * Handles the ./add-tower/ URL
+	 * 
+	 * Fetches the refering page (ie, /course/dummy-course/hole-4/)
+	 * and uses that to add 2 spider locations to the tree.
+	 * Will try and be clever to add them to the hole rather than a
+	 * sub location, so if the inputter is at the Green and wants to add
+	 * a Spider, they don't have to exit the location to put them in.
+	 * 
+	 * @return string
+	 * 
+	 */
+	public function ___executeAddTower() {
+		
+		$modules = $this->wire()->modules;
+		$input = $this->wire()->input;
+		
+		$this->headline($this->_('Generating Tower Pages')); // the <h1> headline
+		$this->browserTitle($this->_('Creating Tower Pages')); // The <title> tag
+		
+		// This is where we came from (PHP gives us this, no need for PW to do it)
+		$refpage = $_SERVER['HTTP_REFERER'];
+		
+		// $refpage will contain the ID of the page we were working on, get the parent (hole)
+		// from that as $pageparent
+		$dirs = explode('=', $refpage);
+    		foreach ($dirs as $key=>$val) {
+             		if (is_numeric($val)) {
+                 		$locid = $val;
+			}
+             	}
+		
+		$page = $this->wire()->pages;
+		$holeid = $page->get("id=".$locid)->parent_id;
+		$courseid = $page->get("id=".$holeid)->parent_id;
+
+		// We'll ask for confirmation, so need a form, just so we're not
+		// blindly creating more pages than we need, and avoids fat-fingers.
+		$form = $modules->get('InputfieldForm');
+		$form->description = $this->_('Please check the Course & Hole are correct before proceeding');
+
+		// We're not going to need any input, we'll just show the options we've found,
+		// and when submitted, this'll then create the pages
+		$field = $modules->get('InputfieldText');
+		$field->label = 'Course Name - ' . $page->get("id=".$courseid)->title;
+		$field->collapsed(1);
+		$form->add($field);
+		$field = $modules->get('InputfieldText');
+		$field->label = 'Hole - ' . $page->get("id=".$holeid)->title;
+		$field->collapsed(1);
+		$form->add($field);
+		
+		// Hidden input to send the Hole & Course IDs to the next part!
+		$field = $this->modules->get('InputfieldHidden');
+		$field->attr('name', 'hole');
+		$field->attr('value', $holeid); 
+		$form->append($field);
+		$field = $this->modules->get('InputfieldHidden');
+		$field->attr('name', 'course');
+		$field->attr('value', $courseid); 
+		$form->append($field);
+		
+	
+		/** @var InputfieldSubmit $submit */
+		$submit = $modules->get('InputfieldSubmit'); 
+		$submit->attr('name', 'submit_now'); 
+		$submit->val($this->_('Submit now')); 
+		$submit->icon = 'smile-o';
+		$submit->addActionValue('exit', $this->_('Submit and exit'), 'frown-o'); // after-submit actions
+		$submit->addActionValue('pages', $this->_('Submit and go to page list'), 'meh-o');
+		$form->add($submit);
+
+		// check if form has been submitted
+		if($input->post($submit->name)) $this->processTower($form);
+		
+		return $form->render();
+	}
 	/**
 	 * Process an Inputfields form and respond to requested submit action
 	 * 
@@ -358,22 +439,24 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$this->message($this->_('Your notification text') . " - $value");
 		$coursename = $value;
 		
-		// To-Do - Tidy up
+		// We're sent the holeid and courseid from the form
+		$holeid = $form->getChildByName('hole')->val();
+		$courseid = $form->getChildByName('course')->val();
 		
-		// Get the path name version of the Course Name
-		$sancoursename = trim($this->wire('sanitizer')->hyphenCase($coursename));
-		// Add Hole info here for adding to the Hole
-		/** */
-		
+		// Retrieve the names for the course and hole, they should be pre-hyphenated
+		$page = $this->wire()->pages;
+		$hole = $page->get("id=".$holeid)->name;
+		$course = $page->get("id=".$courseid)->name;
+						
 		// Now create the 2 Spider Locations
 		$p = $pages->new([
 			'template' => 'Location',
-			'parent' => '/courses/'.$sancoursename.'/'.$hole.'/',
+			'parent' => '/courses/'.$course.'/'.$hole.'/',
 			'title' => 'Green Spider Location'
 		]);
 		$p = $pages->new([
 			'template' => 'Hole',
-			'parent' => '/courses/'.$sancoursename.'/'.$hole.'/',
+			'parent' => '/courses/'.$course.'/'.$hole.'/',
 			'title' => 'Green View from Spider Height'
 		]);
 		
@@ -382,8 +465,8 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		/** @var InputfieldSubmit $submit */
 		$submit = $form->getChildByName('submit_now');
 
-		// user selected: submit and exit
-		if($submit->submitValue === 'exit') $session->redirect('../');
+		// user selected: submit and exit to the newly created spider location page
+		if($submit->submitValue === 'exit') $session->redirect('/courses/'.$course.'/'.$hole.'/green-spider-location/');
 
 		// user selected: submit and go to page list
 		if($submit->submitValue === 'pages') $session->redirect($config->urls->admin);
