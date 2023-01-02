@@ -441,14 +441,14 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$page = $this->wire()->pages;
 		$hole = $page->get("id=".$holeid)->name;
 		$course = $page->get("id=".$courseid)->name;
-						
+
 		// Now create the 2 Spider Locations
-		$p = $pages->new([
+		$p = $page->new([
 			'template' => 'Location',
 			'parent' => '/courses/'.$course.'/'.$hole.'/',
 			'title' => 'Green Spider Location'
 		]);
-		$p = $pages->new([
+		$p = $page->new([
 			'template' => 'Hole',
 			'parent' => '/courses/'.$course.'/'.$hole.'/',
 			'title' => 'Green View from Spider Height'
