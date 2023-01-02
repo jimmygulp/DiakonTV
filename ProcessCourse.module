@@ -203,8 +203,6 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$submit->attr('name', 'submit_now'); 
 		$submit->val($this->_('Submit now')); 
 		$submit->icon = 'smile-o';
-		$submit->addActionValue('exit', $this->_('Submit and exit'), 'frown-o'); // after-submit actions
-		$submit->addActionValue('pages', $this->_('Submit and go to page list'), 'meh-o');
 		$form->add($submit);
 
 		// check if form has been submitted
@@ -217,7 +215,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 	 * Handles the ./add-tower/ URL
 	 * 
 	 * Fetches the refering page (ie, /course/dummy-course/hole-4/)
-	 * and uses that to add 2 spider locations to the tree.
+	 * and uses that to add 2 tower locations to the tree.
 	 * Will try and be clever to add them to the hole rather than a
 	 * sub location, so if the inputter is at the Green and wants to add
 	 * a Spider, they don't have to exit the location to put them in.
@@ -242,7 +240,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
     		foreach ($dirs as $key=>$val) {
              		if (is_numeric($val)) {
                  		$locid = $val;
-			}
+			} else { $locid = 0; }
              	}
 		
 		$page = $this->wire()->pages;
@@ -275,14 +273,11 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$field->attr('value', $courseid); 
 		$form->append($field);
 		
-	
 		/** @var InputfieldSubmit $submit */
 		$submit = $modules->get('InputfieldSubmit'); 
 		$submit->attr('name', 'submit_now'); 
 		$submit->val($this->_('Submit now')); 
 		$submit->icon = 'smile-o';
-		$submit->addActionValue('exit', $this->_('Submit and exit'), 'frown-o'); // after-submit actions
-		$submit->addActionValue('pages', $this->_('Submit and go to page list'), 'meh-o');
 		$form->add($submit);
 
 		// check if form has been submitted
@@ -456,10 +451,47 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		
 		// That should be everything. Redirect to the newly created Spider Green Location Page for instant input
 		$session->redirect('/processwire/page/edit/?id='.$p->id);
-		//$session->redirect('/courses/'.$course.'/'.$hole.'/green-spider-location/');
 
 	}
 
+	protected function processTower(InputfieldForm $form) {
+	
+		$input = $this->wire()->input;
+		$session = $this->wire()->session;
+		$config = $this->wire()->config;
+	
+		// process the form
+		$form->processInput($input->post);
+	
+		// return now if form had errors
+		if(count($form->getErrors())) return;
+		
+		// We're sent the holeid and courseid from the form
+		$holeid = $form->getChildByName('hole')->val();
+		$courseid = $form->getChildByName('course')->val();
+		
+		// Retrieve the names for the course and hole, they should be pre-hyphenated
+		$page = $this->wire()->pages;
+		$hole = $page->get("id=".$holeid)->name;
+		$course = $page->get("id=".$courseid)->name;
+
+		// Now create the 2 Tower Locations
+		$p = $page->new([
+			'template' => 'Location',
+			'parent' => '/courses/'.$course.'/'.$hole.'/',
+			'title' => 'Green Tower Location'
+		]);
+		$p = $page->new([
+			'template' => 'Hole',
+			'parent' => '/courses/'.$course.'/'.$hole.'/',
+			'title' => 'Green View from Tower'
+		]);
+		
+		// That should be everything. Redirect to the newly created Tower Green Location Page for instant input
+		$session->redirect('/processwire/page/edit/?id='.$p->id);
+
+	}
+	
 	/**
 	 * Process an Inputfields form and respond to requested submit action
 	 * 
