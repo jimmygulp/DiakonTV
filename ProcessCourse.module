@@ -160,13 +160,12 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		
 		// $refpage will contain the ID of the page we were working on, get the parent (hole)
 		// from that as $pageparent
-		$dirs = explode('=', $refpage);
-    		foreach ($dirs as $key=>$val) {
-             		if (is_numeric($val)) {
-                 		$locid = $val;
-			} else { $locid = 0; }
-             	}
-		
+		$parts = parse_url($refpage);
+		parse_str($parts['query'], $query);
+		$locid = $query['id'];
+		// If we got here by some random thing, just set it at zero and hope someone notices the incorrect info
+		if(!$locid) { $locid = 0; }
+				
 		$page = $this->wire()->pages;
 		$holeid = $page->get("id=".$locid)->parent_id;
 		$courseid = $page->get("id=".$holeid)->parent_id;
@@ -236,12 +235,11 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		
 		// $refpage will contain the ID of the page we were working on, get the parent (hole)
 		// from that as $pageparent
-		$dirs = explode('=', $refpage);
-    		foreach ($dirs as $key=>$val) {
-             		if (is_numeric($val)) {
-                 		$locid = $val;
-			} else { $locid = 0; }
-             	}
+		$parts = parse_url($refpage);
+		parse_str($parts['query'], $query);
+		$locid = $query['id'];
+		// If we got here by some random thing, just set it at zero and hope someone notices the incorrect info
+		if(!$locid) { $locid = 0; }
 		
 		$page = $this->wire()->pages;
 		$holeid = $page->get("id=".$locid)->parent_id;
