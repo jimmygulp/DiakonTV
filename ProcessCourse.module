@@ -433,12 +433,6 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		// return now if form had errors
 		if(count($form->getErrors())) return;
 		
-		// no errors: display notification with user’s entered text
-		$pages = $this->wire()->pages;
-		$value = $form->getChildByName('notice_text')->val();
-		$this->message($this->_('Your notification text') . " - $value");
-		$coursename = $value;
-		
 		// We're sent the holeid and courseid from the form
 		$holeid = $form->getChildByName('hole')->val();
 		$courseid = $form->getChildByName('course')->val();
