@@ -162,7 +162,6 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		// from that as $pageparent
 		$dirs = explode('=', $refpage);
     		foreach ($dirs as $key=>$val) {
-			fwrite($debug,"Splitting refpage, got this: ".$val."\n");
              		if (is_numeric($val)) {
                  		$locid = $val;
 			}
@@ -188,8 +187,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		$field->collapsed(1);
 		$form->add($field);
 		
-		//$this->message($this->_('Course Name') . " - " . $page->get("id=".$courseid)->title);
-		//$this->message($this->_('Hole') . " - " . $page->get("id=".$holeid)->title);
+		// Hidden input to send the Hole ID to the next part!
 		$field = $this->modules->get('InputfieldHidden');
 		$field->attr('name', 'parent');
 		$field->attr('value', $holeid); 
