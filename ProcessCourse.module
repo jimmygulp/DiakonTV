@@ -454,16 +454,9 @@ class ProcessCourse extends Process implements ConfigurableModule {
 			'title' => 'Green View from Spider Height'
 		]);
 		
-		// That should be everything. 
-		
-		/** @var InputfieldSubmit $submit */
-		$submit = $form->getChildByName('submit_now');
+		// That should be everything. Redirect to the newly created Spider Green Location Page for instant input
+		$session->redirect('/courses/'.$course.'/'.$hole.'/green-spider-location/');
 
-		// user selected: submit and exit to the newly created spider location page
-		if($submit->submitValue === 'exit') $session->redirect('/courses/'.$course.'/'.$hole.'/green-spider-location/');
-
-		// user selected: submit and go to page list
-		if($submit->submitValue === 'pages') $session->redirect($config->urls->admin);
 	}
 
 	/**
