@@ -441,7 +441,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 			'parent' => '/courses/'.$course.'/'.$hole.'/',
 			'title' => 'Green Spider Location'
 		]);
-		$p = $page->new([
+		$q = $page->new([
 			'template' => 'Location',
 			'parent' => '/courses/'.$course.'/'.$hole.'/',
 			'title' => 'Green View from Spider Height'
@@ -479,7 +479,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
 			'parent' => '/courses/'.$course.'/'.$hole.'/',
 			'title' => 'Green Tower Location'
 		]);
-		$p = $page->new([
+		$q = $page->new([
 			'template' => 'Location',
 			'parent' => '/courses/'.$course.'/'.$hole.'/',
 			'title' => 'Green View from Tower'
