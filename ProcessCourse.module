@@ -164,7 +164,7 @@ class ProcessCourse extends Process implements ConfigurableModule {
     		foreach ($dirs as $key=>$val) {
              		if (is_numeric($val)) {
                  		$locid = $val;
-			}
+			} else { $locid = 0; }
              	}
 		
 		$page = $this->wire()->pages;
