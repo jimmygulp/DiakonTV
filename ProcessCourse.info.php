@@ -66,7 +66,7 @@ $info = array(
 		),
 		array(
 			'url' => 'add-tower/',
-			'label' => 'Add Locations Locations',
+			'label' => 'Add Tower Locations',
 			'icon' => 'hospital-o',
 		),
 	)
