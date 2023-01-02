@@ -185,8 +185,8 @@ class ProcessCourse extends Process implements ConfigurableModule {
 
 		// We're not going to need any input, we'll just show the options we've found,
 		// and when submitted, this'll then create the pages
-		$this->message($this->_('Course Name') . " - " . $pages->get("id=".$courseid)->title);
-		$this->message($this->_('Hole') . " - " . $pages->get("id=".$holeid)->title);
+		$this->message($this->_('Course Name') . " - " . $page->get("id=".$courseid)->title);
+		$this->message($this->_('Hole') . " - " . $page->get("id=".$holeid)->title);
 		$field = $this->modules->get('InputfieldHidden');
 		$field->attr('name', 'parent');
 		$field->attr('value', $holeid); 
