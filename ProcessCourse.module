@@ -180,10 +180,10 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		// We're not going to need any input, we'll just show the options we've found,
 		// and when submitted, this'll then create the pages
 		$field = $modules->get('InputfieldText');
-		$field->label = 'Course Name - " . $page->get("id=".$courseid)->title;
+		$field->label = 'Course Name - ' . $page->get("id=".$courseid)->title;
 		$form->add($field);
 		$field = $modules->get('InputfieldText');
-		$field->label = 'Hole - " . $page->get("id=".$holeid)->title;
+		$field->label = 'Hole - ' . $page->get("id=".$holeid)->title;
 		$form->add($field);
 		
 		//$this->message($this->_('Course Name') . " - " . $page->get("id=".$courseid)->title);
