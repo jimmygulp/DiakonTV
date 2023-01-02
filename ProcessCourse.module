@@ -148,8 +148,6 @@ class ProcessCourse extends Process implements ConfigurableModule {
 	 * 
 	 */
 	public function ___executeAddSpider() {
-		// DEBUG - Open a file to write vars to
-		$debug = fopen("/home/diakontv.app/tmp/debug", "a+");
 		
 		$modules = $this->wire()->modules;
 		$input = $this->wire()->input;
@@ -159,7 +157,6 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		
 		// This is where we came from (PHP gives us this, no need for PW to do it)
 		$refpage = $_SERVER['HTTP_REFERER'];
-		fwrite($debug,"Referring Page:".$refpage."\n");
 		
 		// $refpage will contain the ID of the page we were working on, get the parent (hole)
 		// from that as $pageparent
@@ -168,16 +165,13 @@ class ProcessCourse extends Process implements ConfigurableModule {
 			fwrite($debug,"Splitting refpage, got this: ".$val."\n");
              		if (is_numeric($val)) {
                  		$locid = $val;
-				fwrite($debug,"We found a valid numeric value: ".$val."\n");
 			}
              	}
-		fwrite($debug,"Just making sure LocID gets out: ".$locid."\n");
 		
 		$page = $this->wire()->pages;
 		$holeid = $page->get("id=".$locid)->parent_id;
 		$courseid = $page->get("id=".$holeid)->parent_id;
-		fwrite($debug,"HoleID: ".$holeid. " -- CourseID: ".$courseid."\n");
-		
+
 		// We'll ask for confirmation, so need a form, just so we're not
 		// blindly creating more pages than we need, and avoids fat-fingers.
 		$form = $modules->get('InputfieldForm');
@@ -185,8 +179,15 @@ class ProcessCourse extends Process implements ConfigurableModule {
 
 		// We're not going to need any input, we'll just show the options we've found,
 		// and when submitted, this'll then create the pages
-		$this->message($this->_('Course Name') . " - " . $page->get("id=".$courseid)->title);
-		$this->message($this->_('Hole') . " - " . $page->get("id=".$holeid)->title);
+		$field = $modules->get('InputfieldText');
+		$field->label = 'Course Name - " . $page->get("id=".$courseid)->title;
+		$form->add($field);
+		$field = $modules->get('InputfieldText');
+		$field->label = 'Hole - " . $page->get("id=".$holeid)->title;
+		$form->add($field);
+		
+		//$this->message($this->_('Course Name') . " - " . $page->get("id=".$courseid)->title);
+		//$this->message($this->_('Hole') . " - " . $page->get("id=".$holeid)->title);
 		$field = $this->modules->get('InputfieldHidden');
 		$field->attr('name', 'parent');
 		$field->attr('value', $holeid); 
