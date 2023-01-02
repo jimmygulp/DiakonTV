@@ -455,7 +455,8 @@ class ProcessCourse extends Process implements ConfigurableModule {
 		]);
 		
 		// That should be everything. Redirect to the newly created Spider Green Location Page for instant input
-		$session->redirect('/courses/'.$course.'/'.$hole.'/green-spider-location/');
+		$session->redirect('/processwire/page/edit/?id='.$p->id);
+		//$session->redirect('/courses/'.$course.'/'.$hole.'/green-spider-location/');
 
 	}
 
